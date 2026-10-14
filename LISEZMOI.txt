@@ -1,3 +1,4 @@
 Grigne — version à plat (tous les fichiers à la racine).
 Pour la publier : envoyer tous ces fichiers à la racine du dépôt GitHub, puis activer GitHub Pages.
 Le projet complet avec tests est dans grigne-site.zip.
+ 
