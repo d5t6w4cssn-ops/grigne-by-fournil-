@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; font-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#F5F0E6">
+<meta name="description" content="Politique de confidentialité de Grigne : compte, recettes synchronisées, aucun cookie ni mesure d'audience.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Confidentialité — Grigne</title>
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="legal.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Aller au contenu</a>
+<div class="page legal">
+  <header class="brand">
+    <a href="index.html" aria-label="Grigne, retour à l'application">
+      <svg width="30" height="24" viewBox="0 0 30 24" aria-hidden="true" focusable="false"><path d="M5 22 L10 2 M13 22 L18 2 M21 22 L26 2" stroke="#8F4F26" stroke-width="2.6" fill="none"/></svg>
+      <span>grigne</span>
+    </a>
+  </header>
+  <main id="main" tabindex="-1">
+
+    <h1>Confidentialité</h1>
+    <p class="lead">Dernière mise à jour : 14 octobre 2026.</p>
+
+    <div class="notice">En résumé : l'accès à Grigne se fait avec un compte (e-mail et mot de passe). Tes recettes sont enregistrées sur ton appareil et dans ton compte pour être retrouvées partout. Il n'y a ni cookie, ni outil de mesure d'audience, ni publicité, et tes recettes ne sont jamais partagées avec d'autres utilisateurs.</div>
+
+    <h2>Qui est responsable</h2>
+    <p>Le responsable du traitement est l'éditeur indiqué dans les <a href="mentions-legales.html">mentions légales</a>. Contact : <span class="todo">[ADRESSE ÉLECTRONIQUE À COMPLÉTER]</span>.</p>
+
+    <h2>Données traitées, finalités et conservation</h2>
+    <table>
+      <thead><tr><th scope="col">Donnée</th><th scope="col">Finalité</th><th scope="col">Où</th><th scope="col">Conservation</th></tr></thead>
+      <tbody>
+        <tr><td>Adresse e-mail et mot de passe (stocké chiffré, jamais lisible par l'éditeur)</td><td>Créer ton accès et te connecter</td><td>Firebase Authentication (Google)</td><td>Tant que le compte existe</td></tr>
+        <tr><td>Recettes (nom, ingrédients, étapes, température de base) et 20 derniers calculs</td><td>Fournir le service et le synchroniser entre tes appareils</td><td>Firestore (Google), région Europe ; copie dans le navigateur de l'appareil</td><td>Tant que le compte existe, ou jusqu'à ce que tu les effaces</td></tr>
+        <tr><td>Identifiant aléatoire de l'appareil et date de connexion</td><td>Limiter le nombre d'appareils par compte (3)</td><td>Firestore (Google) ; navigateur de l'appareil</td><td>Tant que le compte existe</td></tr>
+        <tr><td>Données techniques de connexion (adresse IP, date)</td><td>Sécurité et délivrance du service</td><td>Google et GitHub, comme tout hébergeur</td><td>Selon leurs politiques</td></tr>
+      </tbody>
+    </table>
+    <p>Base légale : l'exécution du service que tu as demandé (accès au compte et enregistrement de tes recettes). Ces données ne servent ni à te suivre, ni à te profiler, ni à de la publicité. Les recettes d'un compte ne sont lisibles que par ce compte : des règles de sécurité le garantissent côté serveur.</p>
+
+    <h2>Cookies et stockage dans le navigateur</h2>
+    <p>Grigne ne dépose aucun cookie et n'utilise aucun traceur publicitaire ou de mesure d'audience. Le navigateur conserve seulement ce qui est nécessaire au service : ta session de connexion (gérée par Firebase), la copie de tes recettes (clés <code>grigne-recettes-v1</code> et <code>grigne-calc-history-v1</code>, suivies de l'identifiant de ton compte), l'état de synchronisation et l'identifiant de l'appareil. Ces éléments strictement nécessaires ne demandent pas de consentement.</p>
+
+    <h2>Prestataires et transferts hors Union européenne</h2>
+    <p>Le site est servi par GitHub Pages (GitHub, Inc., États-Unis). La connexion et le stockage des recettes sont assurés par Google (Firebase), qui peut traiter certaines données hors de l'Union européenne, notamment aux États-Unis, avec les garanties prévues par le RGPD (clauses contractuelles types, cadre de protection des données UE–États-Unis). Les polices et le lecteur de PDF sont hébergés avec le site. Lorsque tu importes un PDF, il est lu localement dans ton navigateur et n'est envoyé nulle part.</p>
+
+    <h2>Tes droits</h2>
+    <p>Tu peux à tout moment, depuis le bouton « Mes données » de l'application :</p>
+    <ul>
+      <li>consulter tes données (elles sont affichées dans l'application) ;</li>
+      <li>les récupérer dans un fichier de sauvegarde lisible (portabilité) ;</li>
+      <li>les effacer entièrement, sur ton appareil et dans ton compte.</li>
+    </ul>
+    <p>Pour supprimer ton compte, corriger ton adresse e-mail, ou exercer tout autre droit (accès, rectification, opposition, limitation), écris à <span class="todo">[ADRESSE ÉLECTRONIQUE À COMPLÉTER]</span>. Si tu estimes que tes droits ne sont pas respectés, tu peux saisir la CNIL (<a href="https://www.cnil.fr">cnil.fr</a>).</p>
+
+    <p><a href="index.html">← Retour à l'application</a></p>
+  </main>
+</div>
+<footer class="site-footer">
+  <nav aria-label="Informations légales">
+    <a href="mentions-legales.html">Mentions légales</a>
+    <a href="confidentialite.html" aria-current="page">Confidentialité</a>
+    <a href="accessibilite.html">Accessibilité</a>
+    <a href="licences.html">Licences</a>
+  </nav>
+</footer>
+</body>
+</html>

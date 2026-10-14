@@ -1,0 +1,13 @@
+/* Pages d'information (mentions légales, confidentialité, accessibilité, licences). */
+.legal h1 { max-width: none; font-size: 30px; margin-bottom: 8px; }
+.legal h2 { font-family: var(--serif); font-weight: 400; font-size: 20px; margin: 30px 0 8px; }
+.legal p, .legal li { font-size: 15px; color: var(--ink); max-width: 68ch; }
+.legal p { margin: 0 0 12px; }
+.legal ul { padding-left: 20px; margin: 0 0 12px; }
+.legal li { margin-bottom: 6px; }
+.legal .lead { color: var(--muted); }
+.legal .todo { background: #F1E1D5; color: #7A2412; padding: 0 4px; border-radius: 2px; font-weight: 600; }
+.legal .notice { padding: 12px 14px; background: var(--total-bg); border-left: 3px solid var(--accent); font-size: 14px; color: var(--muted); margin: 18px 0; max-width: 68ch; }
+.legal table { border-collapse: collapse; width: 100%; font-size: 14px; margin: 8px 0 16px; }
+.legal th, .legal td { text-align: left; border-bottom: 1px solid var(--line); padding: 8px 8px 8px 0; vertical-align: top; }
+.legal th { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted2); font-weight: 600; }

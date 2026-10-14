@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'; connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com; worker-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="strict-origin">
+<meta name="description" content="Grigne : calculateur de boulangerie et de pâtisserie. Convertis une recette en n'importe quel poids, calcule levain, hydratation, température de base et produit en croix.">
+<meta name="theme-color" content="#F5F0E6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Grigne">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Grigne — Pétris moins, calcule mieux</title>
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="app.css">
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Aller au contenu</a>
+
+<div class="page">
+  <header class="site-header">
+    <div class="brand">
+      <svg width="30" height="24" viewBox="0 0 30 24" aria-hidden="true" focusable="false"><path d="M5 22 L10 2 M13 22 L18 2 M21 22 L26 2" stroke="#8F4F26" stroke-width="2.6" fill="none"/></svg>
+      <span>grigne</span>
+    </div>
+    <h1>Pétris moins, calcule mieux.</h1>
+    <p class="sub">Enregistre une recette une seule fois, à la main ou depuis un PDF, puis calcule n'importe quel poids, levain ou hydratation.</p>
+    <div class="header-links" id="headerLinks" hidden>
+      <button type="button" class="link-btn" id="openGuide">Guide d'utilisation</button>
+      <button type="button" class="link-btn" id="openData">Mes données</button>
+    </div>
+    <div class="account-bar" id="accountBar" hidden>
+      <span class="account-email" id="accountEmail"></span>
+      <span class="sync-status" id="syncStatus" role="status" aria-live="polite"></span>
+      <button type="button" class="link-btn" id="signOutBtn">Se déconnecter</button>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section class="auth-screen" id="screenLoading" aria-live="polite"><p>Chargement…</p></section>
+
+    <section class="auth-screen" id="screenLogin" aria-labelledby="loginTitle" hidden>
+      <h2 id="loginTitle">Connexion</h2>
+      <p class="intro">Grigne est accessible sur invitation. Connecte-toi avec l'adresse e-mail et le mot de passe qu'on t'a donnés.</p>
+      <form id="loginForm" novalidate>
+        <label class="field-label" for="loginEmail">Adresse e-mail</label>
+        <input id="loginEmail" type="email" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+        <label class="field-label field-label--gap" for="loginPassword">Mot de passe</label>
+        <input id="loginPassword" type="password" autocomplete="current-password" required>
+        <button type="submit" class="btn-dark btn-dark--wide btn-dark--gap" id="loginSubmit">Se connecter</button>
+      </form>
+      <p class="auth-msg" id="loginMsg" role="alert"></p>
+      <button type="button" class="link-btn" id="forgotBtn">Mot de passe oublié ?</button>
+      <p class="auth-note">Pas encore de compte ? Demande un accès à la personne qui t'a donné ce lien.</p>
+    </section>
+
+    <section class="auth-screen" id="screenFatal" aria-labelledby="fatalTitle" hidden>
+      <h2 id="fatalTitle">Service indisponible</h2>
+      <p class="intro">Impossible de charger le service de connexion. Vérifie ta connexion internet, puis réessaie.</p>
+      <button type="button" class="btn-dark" id="retryLoad">Réessayer</button>
+    </section>
+
+    <div id="appArea" hidden>
+    <div class="tabs" role="tablist" aria-label="Outils">
+      <button type="button" role="tab" id="tab-library" class="active" data-tab="library" aria-controls="panel-library" aria-selected="true">Bibliothèque</button>
+      <button type="button" role="tab" id="tab-calculator" data-tab="calculator" aria-controls="panel-calculator" aria-selected="false" tabindex="-1">Calculateur</button>
+      <button type="button" role="tab" id="tab-tb" data-tab="tb" aria-controls="panel-tb" aria-selected="false" tabindex="-1">Température de base</button>
+      <button type="button" role="tab" id="tab-levain" data-tab="levain" aria-controls="panel-levain" aria-selected="false" tabindex="-1">Levain</button>
+      <button type="button" role="tab" id="tab-hydra" data-tab="hydra" aria-controls="panel-hydra" aria-selected="false" tabindex="-1">Hydratation</button>
+      <button type="button" role="tab" id="tab-croix" data-tab="croix" aria-controls="panel-croix" aria-selected="false" tabindex="-1">Produit en croix</button>
+    </div>
+
+    <section class="tabpanel" role="tabpanel" id="panel-library" aria-labelledby="tab-library" tabindex="-1"><h2 class="sr-only">Bibliothèque</h2><div id="rc-library-view"></div></section>
+    <section class="tabpanel" role="tabpanel" id="panel-calculator" aria-labelledby="tab-calculator" tabindex="-1" hidden><h2 class="sr-only">Calculateur</h2><div id="rc-calculator-view"></div></section>
+    <section class="tabpanel" role="tabpanel" id="panel-tb" aria-labelledby="tab-tb" tabindex="-1" hidden><h2 class="sr-only">Température de base</h2><div id="rc-tb-view"></div></section>
+    <section class="tabpanel" role="tabpanel" id="panel-levain" aria-labelledby="tab-levain" tabindex="-1" hidden><h2 class="sr-only">Levain</h2><div id="rc-levain-view"></div></section>
+    <section class="tabpanel" role="tabpanel" id="panel-hydra" aria-labelledby="tab-hydra" tabindex="-1" hidden><h2 class="sr-only">Hydratation</h2><div id="rc-hydra-view"></div></section>
+    <section class="tabpanel" role="tabpanel" id="panel-croix" aria-labelledby="tab-croix" tabindex="-1" hidden><h2 class="sr-only">Produit en croix</h2><div id="rc-croix-view"></div></section>
+
+    <p class="save-warn" id="rc-save-warn" role="alert" hidden>La sauvegarde a échoué — tes changements ne persisteront peut-être pas.</p>
+    </div>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <nav aria-label="Informations légales">
+    <a href="mentions-legales.html">Mentions légales</a>
+    <a href="confidentialite.html">Confidentialité</a>
+    <a href="accessibilite.html">Accessibilité</a>
+    <a href="licences.html">Licences</a>
+  </nav>
+</footer>
+
+<dialog class="sheet-dialog" id="guideDialog" aria-labelledby="guideTitle">
+  <div class="sheet-head"><h2 id="guideTitle">Guide d'utilisation</h2><button type="button" class="sheet-close" data-close aria-label="Fermer le guide">×</button></div>
+  <div class="sheet-body" tabindex="0">
+    <h3>Bibliothèque</h3>
+    <p>Enregistre une recette, à la main ou en important un PDF avec texte sélectionnable. Touche une recette pour voir ses ingrédients, avec la colonne « Base 1 kg farine » : la recette ramenée à 1 kg de farine. Tu peux aussi noter la température de base (TB) de la recette : elle s'affiche dans la liste.</p>
+    <h3>Calculateur</h3>
+    <p>Choisis une recette puis un mode : Poids total (le poids de pâte voulu), Pièces × poids (par exemple 15 bâtards × 350 g) ou Poids de farine (la farine à utiliser, le reste se recalcule). Le coefficient est calculé sur la farine : les ingrédients contenant « farine » sont additionnés. Sans farine dans la recette, il se base sur le poids total. « Enregistrer ce calcul » le garde dans l'historique : touche une ligne pour voir le détail, l'icône corbeille pour la supprimer.</p>
+    <h3>Température de base</h3>
+    <p>Saisis la température de base, celle du labo et celle de la farine : la température de l'eau à utiliser s'affiche (base − labo − farine).</p>
+    <h3>Levain</h3>
+    <p>Rafraîchi avec un ratio levain / eau / farine : 1/1/1, 1/2/2, 1/3/3, 1/5/5, 1/10/10 ou personnalisé. « J'ai du levain » : donne ton poids de levain, l'eau et la farine à ajouter sont calculées. « Je veux un poids total » : donne le total voulu, tu obtiens levain, eau et farine.</p>
+    <h3>Hydratation</h3>
+    <p>Saisis la farine et l'eau utilisées, en kg ou en g : tu obtiens le total et le taux d'hydratation (eau ÷ farine).</p>
+    <h3>Produit en croix</h3>
+    <p>Universel : si A correspond à B, alors C correspond à ? Résultat = B × C ÷ A.</p>
+    <h3>Mon compte et mes données</h3>
+    <p>Tes recettes sont rattachées à ton compte : tu les retrouves en te connectant sur un autre appareil. Le message à côté de ton adresse e-mail indique si tout est synchronisé. Tu peux aussi télécharger une sauvegarde, la restaurer, ou tout effacer.</p>
+    <div class="note">Ton compte fonctionne sur 3 appareils à la fois : en te connectant sur un quatrième, le plus ancien est déconnecté. Sans internet, tu peux continuer à travailler : tes changements sont envoyés au retour du réseau. Sur iPhone : Safari, Partager, puis « Sur l'écran d'accueil » pour l'avoir comme une appli.</div>
+  </div>
+</dialog>
+
+<dialog class="sheet-dialog" id="dataDialog" aria-labelledby="dataTitle">
+  <div class="sheet-head"><h2 id="dataTitle">Mes données</h2><button type="button" class="sheet-close" data-close aria-label="Fermer">×</button></div>
+  <div class="sheet-body" tabindex="0">
+    <p>Tes recettes et ton historique sont enregistrés sur cet appareil et dans ton compte (serveurs Google en Europe), pour les retrouver partout où tu te connectes.</p>
+    <div class="data-actions">
+      <button type="button" class="btn-dark btn-dark--wide" id="exportData">Télécharger une sauvegarde</button>
+      <button type="button" class="btn-dark btn-dark--wide" id="importData">Restaurer une sauvegarde</button>
+      <button type="button" class="btn-danger" id="wipeData">Tout effacer</button>
+    </div>
+    <input type="file" id="importFile" accept="application/json,.json" hidden aria-label="Choisir un fichier de sauvegarde">
+    <p class="data-status" id="dataStatus" role="status" aria-live="polite"></p>
+  </div>
+</dialog>
+</body>
+</html>

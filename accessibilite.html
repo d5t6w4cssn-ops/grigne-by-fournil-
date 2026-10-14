@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; font-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#F5F0E6">
+<meta name="description" content="Déclaration d'accessibilité de Grigne.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Accessibilité — Grigne</title>
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="legal.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Aller au contenu</a>
+<div class="page legal">
+  <header class="brand">
+    <a href="index.html" aria-label="Grigne, retour à l'application">
+      <svg width="30" height="24" viewBox="0 0 30 24" aria-hidden="true" focusable="false"><path d="M5 22 L10 2 M13 22 L18 2 M21 22 L26 2" stroke="#8F4F26" stroke-width="2.6" fill="none"/></svg>
+      <span>grigne</span>
+    </a>
+  </header>
+  <main id="main" tabindex="-1">
+
+    <h1>Accessibilité</h1>
+    <p class="lead">Dernière mise à jour : 13 octobre 2026.</p>
+
+    <p>Grigne est conçu pour être utilisable par le plus grand nombre : au clavier, avec un lecteur d'écran, sur mobile, avec le texte agrandi.</p>
+
+    <h2>État de conformité</h2>
+    <p>Grigne n'a pas fait l'objet d'un audit d'accessibilité par un tiers : son niveau de conformité au RGAA et aux WCAG 2.1 (niveau AA) n'est donc pas certifié. L'éditeur n'est pas soumis à l'obligation légale de publier une déclaration de conformité, mais publie cette page par transparence.</p>
+
+    <h2>Ce qui a été fait et vérifié</h2>
+    <ul>
+      <li>Contrôle automatisé avec l'outil axe-core sur tous les écrans de l'application (dont la connexion) et les pages d'information, sans anomalie détectée.</li>
+      <li>Navigation complète au clavier : lien d'évitement, onglets fléchés, boîtes de dialogue qui piègent le focus et se ferment avec Échap.</li>
+      <li>Chaque champ de saisie possède une étiquette ; les résultats de calcul sont annoncés par les lecteurs d'écran.</li>
+      <li>Contrastes de couleurs d'au moins 4,5 : 1 pour le texte ; zones tactiles d'au moins 32 px de haut (36 px pour les icônes).</li>
+      <li>La mise en page s'adapte jusqu'à 320 px de large (soit un affichage agrandi à 400 %) sans défilement horizontal.</li>
+      <li>Les animations sont désactivées pour les personnes qui le demandent dans leur système.</li>
+    </ul>
+
+    <h2>Limites connues</h2>
+    <ul>
+      <li>Aucun test n'a été fait avec des utilisateurs de lecteurs d'écran ; les tests automatisés ne détectent qu'une partie des problèmes.</li>
+      <li>L'import de PDF suppose un document contenant du texte sélectionnable : un scan ou une photo n'est pas lu. La saisie manuelle des ingrédients reste toujours possible.</li>
+    </ul>
+
+    <h2>Signaler un problème</h2>
+    <p>Si tu rencontres une difficulté, écris à <span class="todo">[ADRESSE ÉLECTRONIQUE À COMPLÉTER]</span> en décrivant la page et ton matériel (navigateur, lecteur d'écran). Une réponse te sera apportée dans un délai raisonnable.</p>
+    <p>Si la réponse ne te satisfait pas, tu peux écrire au Défenseur des droits : <a href="https://formulaire.defenseurdesdroits.fr">formulaire.defenseurdesdroits.fr</a>.</p>
+    <p><a href="index.html">← Retour à l'application</a></p>
+  </main>
+</div>
+<footer class="site-footer">
+  <nav aria-label="Informations légales">
+    <a href="mentions-legales.html">Mentions légales</a>
+    <a href="confidentialite.html">Confidentialité</a>
+    <a href="accessibilite.html" aria-current="page">Accessibilité</a>
+    <a href="licences.html">Licences</a>
+  </nav>
+</footer>
+</body>
+</html>

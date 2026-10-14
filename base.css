@@ -1,0 +1,57 @@
+/* Grigne — base commune (application et pages légales).
+   Palette « farine / charbon / croûte » : une seule couleur d'accent, aucun dégradé, aucune ombre. */
+:root {
+  --cream: #F5F0E6;
+  --paper: #FBF8F1;
+  --ink: #26211C;
+  --muted: #5C5348;
+  --muted2: #685E51;
+  --faint: #766C5F;
+  --accent: #8F4F26;
+  --err: #A3301A;
+  --ok: #46602C;
+  --line: #D9D0BE;
+  --line2: #E4DCCB;
+  --row-alt: #F0EADD;
+  --total-bg: #E9E1D0;
+  --serif: 'Young Serif', Georgia, 'Times New Roman', serif;
+  --sans: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html { -webkit-text-size-adjust: 100%; background: var(--cream); }
+body {
+  margin: 0; background: var(--cream); color: var(--ink);
+  font-family: var(--sans); font-variant-numeric: tabular-nums; line-height: 1.45;
+  min-height: 100vh; display: flex; flex-direction: column;
+}
+
+.page { flex: 1; width: 100%; max-width: 620px; margin: 0 auto; padding: 28px 18px 40px; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--ink); color: var(--cream);
+  padding: 10px 14px; border-radius: 2px; font-size: 14px; text-decoration: none;
+}
+.skip-link:focus { top: 12px; }
+
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible,
+[role=button]:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+
+.brand { display: flex; align-items: center; gap: 10px; margin-bottom: 26px; }
+.brand svg { display: block; flex-shrink: 0; }
+.brand span { font-family: var(--serif); font-size: 20px; letter-spacing: 0.01em; }
+.brand a { display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; }
+
+.site-footer { border-top: 1px solid var(--line); padding: 18px; font-size: 13px; color: var(--muted2); }
+.site-footer nav { max-width: 620px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.site-footer a { color: var(--muted); display: inline-block; padding: 4px 0; }
+.site-footer a:hover { color: var(--ink); }
