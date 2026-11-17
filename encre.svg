@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240">
+  <!-- masque « encre de tampon » : plein à ~90 %, quelques manques en taches et de rares points -->
+  <filter id="u" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.07" numOctaves="3" seed="4" result="taches"/>
+    <feColorMatrix in="taches" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -7 5.25" result="a"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="1" seed="11" result="grain"/>
+    <feColorMatrix in="grain" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -12 9.5" result="b"/>
+    <feComposite in="a" in2="b" operator="in"/>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#u)"/>
+</svg>

@@ -1,21 +1,68 @@
 /* Grigne — base commune (application et pages légales).
-   Palette « farine / charbon / croûte » : une seule couleur d'accent, aucun dégradé, aucune ombre. */
+   Palette « farine / charbon / croûte », en clair et en sombre. Ombres douces et
+   dégradés discrets permis quand ils servent la lecture (voir CLAUDE.md). */
 :root {
-  --cream: #F5F0E6;
-  --paper: #FBF8F1;
+  /* fonds */
+  --cream: #F5F0E6;        /* fond de page */
+  --paper: #FFFCF6;        /* cartes, champs */
+  --surface-2: #EDE6D8;    /* boutons doux, segments */
+  --row-alt: #F0EADD;
+  --total-bg: #E9E1D0;
+  /* texte */
   --ink: #26211C;
+  --ink-hover: #3A332C;
   --muted: #5C5348;
   --muted2: #685E51;
   --faint: #766C5F;
+  /* croûte */
   --accent: #8F4F26;
+  --accent-deep: #6E3A1B;
+  --accent-soft: #F3E6D8;
+  --accent-line: #E6D3C0;
+  --on-accent: #FFFCF6;
+  /* états */
   --err: #A3301A;
+  --err-bg: #F1E1D5;
   --ok: #46602C;
+  --ok-bg: #E8EBD8;
+  /* filets */
   --line: #D9D0BE;
   --line2: #E4DCCB;
-  --row-alt: #F0EADD;
-  --total-bg: #E9E1D0;
-  --serif: 'Young Serif', Georgia, 'Times New Roman', serif;
-  --sans: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* tampon et décor */
+  --stamp: #8F4F26;
+  --stamp-bg: #FFFCF6; /* opaque : le tampon passe devant la bande et le texte */
+  --wave: #8F4F26;
+  --backdrop: rgba(38, 33, 28, .55);
+  --shadow: 0 1px 2px rgba(38, 33, 28, .06), 0 10px 28px -16px rgba(38, 33, 28, .28);
+  --shadow-up: 0 -8px 24px -18px rgba(38, 33, 28, .35);
+  --radius: 18px;
+  --serif: 'Grigne Espace fine', 'Young Serif', Georgia, 'Times New Roman', serif;
+  --sans: 'Grigne Espace fine', 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme: light;
+}
+
+/* Thème sombre : suit le téléphone, sauf choix contraire mémorisé (data-theme). */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --cream: #17130F; --paper: #26211C; --surface-2: #322B24; --row-alt: #211C17; --total-bg: #2E2620;
+    --ink: #F5F0E6; --ink-hover: #E4DACB; --muted: #C9BEAC; --muted2: #BDB19F; --faint: #A89C8A;
+    --accent: #E2A577; --accent-deep: #EDBF98; --accent-soft: #3A2C21; --accent-line: #4E3A2A; --on-accent: #1E1914;
+    --err: #F08A72; --err-bg: #3A221B; --ok: #A9C98A; --ok-bg: #26301C;
+    --line: #43392F; --line2: #382F27;
+    --stamp: #E8B48A; --stamp-bg: #26211C; --wave: #B98762; --backdrop: rgba(0, 0, 0, .62);
+    --shadow: 0 10px 28px -18px rgba(0, 0, 0, .8); --shadow-up: none;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --cream: #17130F; --paper: #26211C; --surface-2: #322B24; --row-alt: #211C17; --total-bg: #2E2620;
+  --ink: #F5F0E6; --ink-hover: #E4DACB; --muted: #C9BEAC; --muted2: #BDB19F; --faint: #A89C8A;
+  --accent: #E2A577; --accent-deep: #EDBF98; --accent-soft: #3A2C21; --accent-line: #4E3A2A; --on-accent: #1E1914;
+  --err: #F08A72; --err-bg: #3A221B; --ok: #A9C98A; --ok-bg: #26301C;
+  --line: #43392F; --line2: #382F27;
+  --stamp: #E8B48A; --stamp-bg: #26211C; --wave: #B98762; --backdrop: rgba(0, 0, 0, .62);
+  --shadow: 0 10px 28px -18px rgba(0, 0, 0, .8); --shadow-up: none;
+  color-scheme: dark;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -24,7 +71,7 @@
 html { -webkit-text-size-adjust: 100%; background: var(--cream); }
 body {
   margin: 0; background: var(--cream); color: var(--ink);
-  font-family: var(--sans); font-variant-numeric: tabular-nums; line-height: 1.45;
+  font-family: var(--sans); font-variant-numeric: lining-nums tabular-nums; line-height: 1.45;
   min-height: 100vh; display: flex; flex-direction: column;
 }
 
@@ -36,7 +83,7 @@ body {
 }
 .skip-link {
   position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--ink); color: var(--cream);
-  padding: 10px 14px; border-radius: 2px; font-size: 14px; text-decoration: none;
+  padding: 10px 14px; border-radius: 8px; font-size: 14px; text-decoration: none;
 }
 .skip-link:focus { top: 12px; }
 
@@ -47,9 +94,35 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 
 .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 26px; }
-.brand svg { display: block; flex-shrink: 0; }
+.brand svg { display: block; flex-shrink: 0; color: var(--accent); }
+.brand svg g[fill="#8F4F26"] { fill: var(--accent); }
 .brand span { font-family: var(--serif); font-size: 20px; letter-spacing: 0.01em; }
 .brand a { display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; }
+
+/* barre du haut et bouton clair / sombre (application et pages légales) */
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.topbar .brand { margin: 0; min-height: 48px; }
+.topbar .brand span { font-size: 22px; }
+.topbar-end { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.theme-btn { display: grid; place-items: center; flex-shrink: 0; width: 48px; height: 48px; padding: 0; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); color: var(--ink); cursor: pointer; }
+.theme-btn svg { grid-area: 1 / 1; }
+.theme-btn[aria-pressed="true"] .ic-moon, .theme-btn[aria-pressed="false"] .ic-sun { display: none; }
+.theme-btn:hover { border-color: var(--faint); }
+.read-btn span { font-family: var(--serif); font-size: 17px; line-height: 1; }
+.theme-btn[aria-pressed="true"].read-btn { background: var(--ink); border-color: var(--ink); color: var(--cream); }
+
+/* Lecture facile : OpenDyslexic partout, lettres, mots et lignes un peu plus espacés */
+:root[data-lecture="facile"] {
+  --serif: 'Grigne Espace fine', 'OpenDyslexic', Georgia, serif;
+  --sans: 'Grigne Espace fine', 'OpenDyslexic', system-ui, sans-serif;
+}
+/* OpenDyslexic est dessinée très large (espace de 0,85 em contre 0,26 em pour Hanken Grotesk) :
+   les lettres gardent son espacement à elle, l'espace entre les mots est un peu resserré (environ 0,55 em,
+   soit deux fois l'espace habituel), les lignes plus aérées. Les petites capitales perdent leur écart
+   supplémentaire ; le texte en arc du tampon garde le sien. */
+:root[data-lecture="facile"] body { letter-spacing: 0; word-spacing: -.3em; line-height: 1.6; }
+:root[data-lecture="facile"] body :not(svg, svg *) { letter-spacing: inherit; }
+:root[data-lecture="facile"] h1, :root[data-lecture="facile"] h2, :root[data-lecture="facile"] h3 { line-height: 1.25; }
 
 .site-footer { border-top: 1px solid var(--line); padding: 18px; font-size: 13px; color: var(--muted2); }
 .site-footer nav { max-width: 620px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 6px 18px; }

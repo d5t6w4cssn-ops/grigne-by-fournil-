@@ -13,3 +13,10 @@ export const MAX_DEVICES = 3;
 
 /** Chemin du paquet Firebase auto-hébergé (relatif à ce fichier). */
 export const FIREBASE_SDK_URL = new URL('./firebase.min.js', import.meta.url).href;
+
+/**
+ * Adresse qui reçoit les messages du formulaire « Nous écrire ».
+ * Adresse publique de Grigne, prévue pour être affichée et utilisée par le formulaire.
+ * Le formulaire n'envoie rien lui-même : il ouvre l'application mail avec un message pré-rempli (lien mailto).
+ */
+export const CONTACT_EMAIL = 'grigneapp@gmail.com';

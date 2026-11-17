@@ -1,13 +1,36 @@
-/* Pages d'information (mentions légales, confidentialité, accessibilité, licences). */
-.legal h1 { max-width: none; font-size: 30px; margin-bottom: 8px; }
-.legal h2 { font-family: var(--serif); font-weight: 400; font-size: 20px; margin: 30px 0 8px; }
-.legal p, .legal li { font-size: 15px; color: var(--ink); max-width: 68ch; }
+/* Pages d'information (mentions légales, confidentialité, accessibilité, licences).
+   Une page de lecture : grand titre, texte sur une feuille, largeur confortable. */
+.legal { max-width: 760px; }
+.legal-top { margin-bottom: 26px; }
+.legal-top .brand { margin: 0; }
+
+.legal main { position: relative; padding: 26px 20px 22px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); box-shadow: var(--shadow); }
+.legal main::before { content: ""; position: absolute; inset: 0 0 auto; height: 6px; border-radius: var(--radius) var(--radius) 0 0; background: var(--accent); }
+
+.legal h1 { max-width: none; margin: 4px 0 8px; font-family: var(--serif); font-weight: 400; font-size: 34px; line-height: 1.1; letter-spacing: -0.01em; }
+.legal h2 { display: flex; align-items: center; gap: 10px; margin: 30px 0 10px; font-family: var(--serif); font-weight: 400; font-size: 22px; line-height: 1.2; }
+.legal h2::before { content: ""; flex-shrink: 0; width: 18px; height: 2px; border-radius: 2px; background: var(--accent); }
+.legal p, .legal li { font-size: 16px; line-height: 1.6; color: var(--ink); max-width: 66ch; }
 .legal p { margin: 0 0 12px; }
-.legal ul { padding-left: 20px; margin: 0 0 12px; }
-.legal li { margin-bottom: 6px; }
-.legal .lead { color: var(--muted); }
-.legal .todo { background: #F1E1D5; color: #7A2412; padding: 0 4px; border-radius: 2px; font-weight: 600; }
-.legal .notice { padding: 12px 14px; background: var(--total-bg); border-left: 3px solid var(--accent); font-size: 14px; color: var(--muted); margin: 18px 0; max-width: 68ch; }
-.legal table { border-collapse: collapse; width: 100%; font-size: 14px; margin: 8px 0 16px; }
-.legal th, .legal td { text-align: left; border-bottom: 1px solid var(--line); padding: 8px 8px 8px 0; vertical-align: top; }
-.legal th { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted2); font-weight: 600; }
+.legal ul { padding-left: 22px; margin: 0 0 12px; }
+.legal li { margin-bottom: 8px; }
+.legal li::marker { color: var(--accent); }
+.legal .lead { color: var(--muted); font-size: 15px; }
+.legal a { overflow-wrap: anywhere; }
+.legal .todo { padding: 1px 6px; border-radius: 6px; background: var(--err-bg); color: var(--err); font-weight: 600; }
+.legal .notice { margin: 18px 0; max-width: 66ch; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--accent-line); background: var(--accent-soft); color: var(--ink); font-size: 15px; line-height: 1.55; }
+
+/* tableaux : colonnes lisibles, défilement à l'intérieur du tableau sur petit écran, jamais de la page */
+.legal table { display: block; overflow-x: auto; border-collapse: collapse; width: 100%; font-size: 14px; margin: 8px 0 18px; }
+.legal th, .legal td { min-width: 128px; text-align: left; border-bottom: 1px dashed var(--line); padding: 10px 12px 10px 0; vertical-align: top; }
+.legal th { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted2); font-weight: 600; border-bottom: 1.5px solid var(--ink); }
+
+/* « ← Retour à l'application » : un vrai bouton */
+.legal main > p:last-child a[href="index.html"] { display: inline-flex; align-items: center; min-height: 48px; margin-top: 12px; padding: 0 20px; border-radius: 14px; background: var(--ink); color: var(--cream); font-weight: 600; text-decoration: none; }
+.legal main > p:last-child a[href="index.html"]:hover { background: var(--ink-hover); }
+
+@media (min-width: 860px) {
+  .legal { padding-top: 32px; }
+  .legal main { padding: 40px 48px 36px; }
+  .legal h1 { font-size: 46px; }
+}

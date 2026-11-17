@@ -1,8 +1,9 @@
 import { state, saveRecipes } from './state.js';
 import { esc, uid } from './core-text.js';
 import { formatGrams, toGrams, numVal } from './core-units.js';
-import { getFlourWeightG, getTotalG } from './core-recipe-math.js';
+import { getFlourWeightG, getTotalG, isFlour } from './core-recipe-math.js';
 import { parseRecipeText } from './core-parse.js';
+import { makeExampleRecipes } from './core-examples.js';
 import { extractPdfText } from './pdf.js';
 import { byId, el, icons, nextId } from './ui-dom.js';
 
@@ -18,15 +19,42 @@ export function renderLibrary() {
 
   if (state.recipes.length === 0 && !state.adding) {
     const empty = el('div', 'empty');
-    empty.innerHTML = `<p>Ta bibliothèque est vide. Ajoute une première recette pour commencer à convertir.</p>`;
+    empty.innerHTML = `
+      <span class="empty-badge" aria-hidden="true">${icons.wheat(34)}</span>
+      <p class="empty-title">Ton carnet de recettes t'attend</p>
+      <p>Ta bibliothèque est vide. Ajoute une première recette pour commencer à convertir : à la main, en collant un texte ou depuis un PDF. Ou pars de nos exemples.</p>`;
     const btn = el('button', 'btn-dark');
     btn.type = 'button';
-    btn.innerHTML = `${icons.plus()} Ajouter une recette`;
+    btn.innerHTML = `${icons.plus(18)} Ajouter une recette`;
     btn.onclick = openAdd;
-    empty.appendChild(btn);
+    const examplesBtn = el('button', 'btn-soft');
+    examplesBtn.type = 'button';
+    examplesBtn.innerHTML = `${icons.wheat(18)} Ajouter 3 recettes d'exemple`;
+    examplesBtn.onclick = () => {
+      state.recipes.push(...makeExampleRecipes());
+      saveRecipes();
+      renderLibrary();
+      byId('rc-library-view').querySelector('.lib-add')?.focus();
+    };
+    const actions = el('div', 'empty-actions');
+    actions.append(btn, examplesBtn);
+    empty.appendChild(actions);
+    empty.appendChild(el('p', 'empty-hint', 'Baguette de tradition, pain de campagne au levain et brioche : tu pourras les modifier ou les supprimer comme les autres.'));
     view.appendChild(empty);
     return;
   }
+
+  const n = state.recipes.length;
+  const head = el('div', 'lib-head');
+  head.appendChild(el('p', 'lib-count', n ? `${n} recette${n > 1 ? 's' : ''}` : 'Ta première recette'));
+  if (!state.adding) {
+    const addBtn = el('button', 'btn-dark lib-add');
+    addBtn.type = 'button';
+    addBtn.innerHTML = `${icons.plus(18)} Ajouter une recette`;
+    addBtn.onclick = openAdd;
+    head.appendChild(addBtn);
+  }
+  view.appendChild(head);
 
   const list = el('div', 'recipe-list');
   state.recipes.forEach((r) => {
@@ -34,15 +62,14 @@ export function renderLibrary() {
   });
   view.appendChild(list);
 
-  if (state.adding) {
-    view.appendChild(buildRecipeForm(null));
-  } else {
-    const addBtn = el('button', 'btn-link btn-link--top');
-    addBtn.type = 'button';
-    addBtn.innerHTML = `${icons.plus()} Ajouter une recette`;
-    addBtn.onclick = openAdd;
-    view.appendChild(addBtn);
-  }
+  if (state.adding) view.appendChild(buildRecipeForm(null));
+}
+
+/** Ouvre le Calculateur sur cette recette. */
+function openInCalculator(r) {
+  state.calc.recipeId = r.id;
+  state.calc.notesVisible = false;
+  byId('tab-calculator').click();
 }
 
 function buildRecipeRow(r) {
@@ -53,38 +80,49 @@ function buildRecipeRow(r) {
   const detailId = nextId('ing');
   const notesId = nextId('notes');
   const hasTb = r.tb !== undefined && r.tb !== '' && r.tb !== null;
+  const count = r.ingredients.length;
 
-  const row = el('div', 'recipe-row recipe-row--stack');
+  const chips = [
+    `${count} ingrédient${count > 1 ? 's' : ''}`,
+    `Référence ${formatGrams(total)}`,
+    totalFor1kg ? `Base 1\u202Fkg farine : ${formatGrams(totalFor1kg)}` : '',
+    hasTb ? `TB ${String(r.tb).replace('.', ',')}\u202F°C` : '',
+  ].filter(Boolean);
+
+  const row = el('article', 'recipe-row recipe-card');
   const ingLines = (cols) =>
     r.ingredients
       .map(
         (ing) =>
-          `<div class="line"><span>${esc(ing.name)}</span>${cols(ing)}</div>`,
+          `<div class="line${isFlour(ing) ? ' line--flour' : ''}"><span class="line-name">${esc(ing.name)}</span>${cols(ing)}</div>`,
       )
       .join('');
 
   row.innerHTML = `
     <div class="recipe-head">
-      <div class="recipe-info">
-        <h3><button type="button" class="row-toggle" aria-expanded="false" aria-controls="${detailId}">${esc(r.name)}</button></h3>
-        <div class="meta">${r.ingredients.length} ingrédient${r.ingredients.length > 1 ? 's' : ''} · référence ${formatGrams(total)}${totalFor1kg ? ` · base 1 kg farine : ${formatGrams(totalFor1kg)}` : ''}${hasTb ? ` · TB ${esc(r.tb)} °C` : ''}</div>
-      </div>
+      <h3><button type="button" class="row-toggle" aria-expanded="false" aria-controls="${detailId}">${esc(r.name)}</button></h3>
       <div class="row-actions">
-        ${r.notes ? `<button type="button" class="icon-btn notes-btn" aria-label="Étapes de ${esc(r.name)}" aria-expanded="false" aria-controls="${notesId}">${icons.info()}</button>` : ''}
-        <button type="button" class="icon-btn edit-btn" aria-label="Modifier ${esc(r.name)}">${icons.edit()}</button>
-        <button type="button" class="icon-btn del-btn" aria-label="Supprimer ${esc(r.name)}">${icons.trash()}</button>
+        ${r.notes ? `<button type="button" class="icon-btn notes-btn" aria-label="Étapes de ${esc(r.name)}" aria-expanded="false" aria-controls="${notesId}">${icons.info(18)}</button>` : ''}
+        <button type="button" class="icon-btn edit-btn" aria-label="Modifier ${esc(r.name)}">${icons.edit(18)}</button>
+        <button type="button" class="icon-btn del-btn" aria-label="Supprimer ${esc(r.name)}">${icons.trash(18)}</button>
       </div>
     </div>
+    <ul class="meta chips">${chips.map((c) => `<li>${esc(c)}</li>`).join('')}</ul>
+    ${r.notes ? `<div class="notes-display" id="${notesId}" hidden>${esc(r.notes)}</div>` : ''}
     <div class="ing-display" id="${detailId}" hidden>
       ${
         scale1kg
-          ? `<div class="line line--head"><span>Ingrédient</span><span class="cols"><span class="col">Ta recette</span><span class="col">Base 1 kg farine</span></span></div>
+          ? `<div class="line line--head"><span class="line-name">Ingrédient</span><span class="cols"><span class="col">Ta recette</span><span class="col">Base 1\u202Fkg farine</span></span></div>
              ${ingLines((ing) => `<span class="cols"><span class="col">${formatGrams(ing.qtyG)}</span><span class="col col--strong">${formatGrams(ing.qtyG * scale1kg)}</span></span>`)}
-             <div class="line line--total"><span>Total</span><span class="cols"><span class="col">${formatGrams(total)}</span><span class="col">${formatGrams(totalFor1kg)}</span></span></div>`
-          : ingLines((ing) => `<span class="strong">${formatGrams(ing.qtyG)}</span>`)
+             <div class="line line--total"><span class="line-name">Total</span><span class="cols"><span class="col">${formatGrams(total)}</span><span class="col">${formatGrams(totalFor1kg)}</span></span></div>`
+          : `${ingLines((ing) => `<span class="cols"><span class="col col--strong">${formatGrams(ing.qtyG)}</span></span>`)}
+             <div class="line line--total"><span class="line-name">Total</span><span class="cols"><span class="col">${formatGrams(total)}</span></span></div>`
       }
     </div>
-    ${r.notes ? `<div class="notes-display" id="${notesId}" hidden>${esc(r.notes)}</div>` : ''}
+    <div class="recipe-foot">
+      <span class="recipe-more" aria-hidden="true">${icons.chevron(18)}<span class="recipe-more-t">Ingrédients</span></span>
+      <button type="button" class="btn-soft calc-btn" aria-label="Calculer ${esc(r.name)}">${icons.scale(18)} Calculer</button>
+    </div>
   `;
 
   const toggleBtn = row.querySelector('.row-toggle');
@@ -92,6 +130,7 @@ function buildRecipeRow(r) {
   const toggleDetail = () => {
     detail.hidden = !detail.hidden;
     toggleBtn.setAttribute('aria-expanded', String(!detail.hidden));
+    row.classList.toggle('is-open', !detail.hidden);
   };
   toggleBtn.onclick = toggleDetail;
   row.addEventListener('click', (e) => {
@@ -107,6 +146,7 @@ function buildRecipeRow(r) {
       nb.setAttribute('aria-expanded', String(!nd.hidden));
     };
   }
+  row.querySelector('.calc-btn').onclick = () => openInCalculator(r);
   row.querySelector('.edit-btn').onclick = () => {
     state.editingId = r.id;
     renderLibrary();
@@ -123,7 +163,7 @@ function buildRecipeRow(r) {
 
 function buildRecipeForm(initial) {
   const key = initial ? initial.id : 'new';
-  const wrap = el('div', 'card card--spaced');
+  const wrap = el('div', 'card card--spaced recipe-form');
 
   let ingredients =
     initial && initial.ingredients.length
@@ -139,15 +179,31 @@ function buildRecipeForm(initial) {
   const notesTaId = nextId('notesta');
   const errId = nextId('err');
 
+  const titleId = nextId('formtitle');
+  wrap.setAttribute('role', 'group');
+  wrap.setAttribute('aria-labelledby', titleId);
   wrap.innerHTML = `
-    <input id="${nameId}" class="name-input" aria-label="Nom de la recette" aria-describedby="${errId}" placeholder="Nom de la recette (ex. Pain complet)" value="${initial ? esc(initial.name) : ''}" maxlength="200">
-    <label class="dropzone">
-      <span class="dz-title"><strong>Dépose un PDF ici</strong> ou clique pour en choisir un</span>
-      <span class="hint">Fonctionne si le PDF contient du texte sélectionnable. Pour un scan manuscrit, saisis les ingrédients à la main ci-dessous.</span>
-      <input type="file" accept="application/pdf" class="dz-input" aria-label="Choisir un fichier PDF">
-    </label>
+    <h3 class="form-title" id="${titleId}">${initial ? 'Modifier la recette' : 'Nouvelle recette'}</h3>
+    <input id="${nameId}" class="name-input" aria-label="Nom de la recette" aria-describedby="${errId}" placeholder="Nom de la recette" value="${initial ? esc(initial.name) : ''}" maxlength="200">
+
+    <div class="import-tiles">
+      <label class="dropzone tile">
+        <span class="tile-icon" aria-hidden="true">${icons.file(22)}</span>
+        <span class="tile-text">
+          <span class="dz-title"><strong>Importer un PDF</strong></span>
+          <span class="hint">Dépose-le ici ou touche pour le choisir. Il doit contenir du texte sélectionnable : pour un scan, saisis à la main.</span>
+        </span>
+        <input type="file" accept="application/pdf" class="dz-input" aria-label="Choisir un fichier PDF">
+      </label>
+      <button type="button" class="tile paste-toggle-btn" aria-expanded="false" aria-controls="${pasteId}">
+        <span class="tile-icon" aria-hidden="true">${icons.paste(22)}</span>
+        <span class="tile-text">
+          <strong>Coller le texte d'une recette</strong>
+          <span class="hint" aria-hidden="true">Une ligne par ingrédient : «\u202F500\u202Fg farine\u202F»</span>
+        </span>
+      </button>
+    </div>
     <div id="${statusId}" role="status" aria-live="polite"></div>
-    <button type="button" class="btn-link paste-toggle-btn btn-link--gap" aria-expanded="false" aria-controls="${pasteId}">${icons.paste()} Coller le texte d'une recette</button>
     <div class="paste-area" id="${pasteId}" hidden>
       <textarea rows="6" aria-label="Texte de la recette à analyser" placeholder="500 g farine T65&#10;350 g eau&#10;10 g sel&#10;5 g levure"></textarea>
       <div class="paste-actions">
@@ -155,22 +211,31 @@ function buildRecipeForm(initial) {
         <button type="button" class="btn-ghost cancel-paste-btn">Annuler</button>
       </div>
     </div>
+
+    <h4 class="form-section">Ingrédients</h4>
+    <p class="form-hint">La farine sert de base aux calculs : garde le mot «\u202Ffarine\u202F» dans son nom.</p>
     <div class="ing-list" role="group" aria-label="Ingrédients"></div>
-    <button type="button" class="btn-link add-ing-btn btn-link--gap-lg">${icons.plus(14)} Ajouter un ingrédient</button>
-    <button type="button" class="btn-link notes-toggle-btn btn-link--gap" aria-expanded="false">${icons.info(14)} <span class="notes-toggle-label">${notes ? 'Voir les étapes / temps' : 'Ajouter des étapes / temps (optionnel)'}</span></button>
-    <div class="notes-area" hidden>
-      <textarea id="${notesTaId}" class="notes-textarea" rows="4" aria-label="Étapes et temps" placeholder="Ex. 30min de pointage, division, façonnage…"></textarea>
-    </div>
+    <button type="button" class="add-row add-ing-btn">${icons.plus(18)} Ajouter un ingrédient</button>
+
+    <h4 class="form-section">Pour le fournil</h4>
     <div class="tb-row">
       <label for="${tbId}">Température de base (TB)</label>
-      <input id="${tbId}" type="number" inputmode="decimal" step="any" class="tb-input" placeholder="ex. 54" value="${esc(tb)}">
-      <span class="tb-hint">°C, facultatif</span>
+      <span class="suffix-field">
+        <input id="${tbId}" type="number" inputmode="decimal" step="any" class="tb-input" placeholder="ex. 54" value="${esc(tb)}">
+        <span class="suffix" aria-hidden="true">°C</span>
+      </span>
+      <span class="tb-hint">facultatif</span>
     </div>
+    <button type="button" class="btn-link notes-toggle-btn" aria-expanded="false">${icons.info(16)} <span class="notes-toggle-label">${notes ? 'Voir les étapes / temps' : 'Ajouter des étapes / temps (optionnel)'}</span></button>
+    <div class="notes-area" hidden>
+      <textarea id="${notesTaId}" class="notes-textarea" rows="4" aria-label="Étapes et temps" placeholder="Ex. 30 min de pointage, division, façonnage…"></textarea>
+    </div>
+
+    <p class="save-error" id="${errId}" role="alert" hidden></p>
     <div class="card-actions">
-      <button type="button" class="btn-dark save-btn">${icons.check()} Enregistrer</button>
+      <button type="button" class="btn-dark save-btn">${icons.check(18)} Enregistrer</button>
       <button type="button" class="btn-ghost cancel-btn">Annuler</button>
     </div>
-    <p class="save-error" id="${errId}" role="alert" hidden></p>
   `;
   wrap.querySelector('.notes-textarea').value = notes;
 

@@ -1,9 +1,14 @@
 import { toGrams, numVal } from './core-units.js';
 
+/** Un ingrédient est une farine si son nom contient « farine ». */
+export function isFlour(ing) {
+  return ing.name.toLowerCase().includes('farine');
+}
+
 /** Poids total de farine : additionne tous les ingrédients dont le nom contient « farine ». */
 export function getFlourWeightG(recipe) {
   return recipe.ingredients
-    .filter((ing) => ing.name.toLowerCase().includes('farine'))
+    .filter(isFlour)
     .reduce((s, ing) => s + ing.qtyG, 0);
 }
 

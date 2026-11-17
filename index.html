@@ -7,6 +7,7 @@
 <meta name="referrer" content="strict-origin">
 <meta name="description" content="Grigne : calculateur de boulangerie et de pâtisserie. Convertis une recette en n'importe quel poids, calcule levain, hydratation, température de base et produit en croix.">
 <meta name="theme-color" content="#F5F0E6">
+<meta name="color-scheme" content="light dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Grigne">
@@ -18,6 +19,7 @@
 <link rel="stylesheet" href="fonts.css">
 <link rel="stylesheet" href="base.css">
 <link rel="stylesheet" href="app.css">
+<script src="theme.js"></script>
 <script type="module" src="app.js"></script>
 </head>
 <body>
@@ -25,20 +27,44 @@
 
 <div class="page">
   <header class="site-header">
-    <div class="brand">
-      <svg width="32" height="27" viewBox="-54 -46 108 92" aria-hidden="true" focusable="false"><g fill="#8F4F26"><path d="M -0.6 -31 C 3.6 -19, 5.4 -8, 4.9 3.5 C 4.5 13, 3.2 23, 1.3 31 C -0.7 23, -2.6 13, -3.3 3.5 C -4.1 -8, -3.5 -19, -0.6 -31 Z" transform="translate(-22 9) rotate(16)"/><path d="M -0.6 -31 C 3.6 -19, 5.4 -8, 4.9 3.5 C 4.5 13, 3.2 23, 1.3 31 C -0.7 23, -2.6 13, -3.3 3.5 C -4.1 -8, -3.5 -19, -0.6 -31 Z" transform="translate(0 0) rotate(16)"/><path d="M -0.6 -31 C 3.6 -19, 5.4 -8, 4.9 3.5 C 4.5 13, 3.2 23, 1.3 31 C -0.7 23, -2.6 13, -3.3 3.5 C -4.1 -8, -3.5 -19, -0.6 -31 Z" transform="translate(22 -9) rotate(16)"/></g></svg>
-      <span>grigne</span>
+    <div class="topbar">
+      <div class="brand">
+        <svg width="30" height="26" viewBox="-54 -46 108 92" aria-hidden="true" focusable="false"><g fill="currentColor"><path d="M -0.6 -31 C 3.6 -19, 5.4 -8, 4.9 3.5 C 4.5 13, 3.2 23, 1.3 31 C -0.7 23, -2.6 13, -3.3 3.5 C -4.1 -8, -3.5 -19, -0.6 -31 Z" transform="translate(-22 9) rotate(16)"/><path d="M -0.6 -31 C 3.6 -19, 5.4 -8, 4.9 3.5 C 4.5 13, 3.2 23, 1.3 31 C -0.7 23, -2.6 13, -3.3 3.5 C -4.1 -8, -3.5 -19, -0.6 -31 Z" transform="translate(0 0) rotate(16)"/><path d="M -0.6 -31 C 3.6 -19, 5.4 -8, 4.9 3.5 C 4.5 13, 3.2 23, 1.3 31 C -0.7 23, -2.6 13, -3.3 3.5 C -4.1 -8, -3.5 -19, -0.6 -31 Z" transform="translate(22 -9) rotate(16)"/></g></svg>
+        <span>grigne</span>
+      </div>
+      <div class="topbar-end">
+        <span class="sync-status" id="syncStatus" role="status" aria-live="polite"></span>
+        <button type="button" class="theme-btn help-btn" id="openGuide" aria-label="Guide d'utilisation">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9.2 9a3 3 0 0 1 5.6 1c0 2-3 2.6-3 4.5"/><path d="M12 18h.01"/></svg>
+        </button>
+        <button type="button" class="theme-btn read-btn" id="readToggle" aria-pressed="false" aria-label="Lecture facile"><span aria-hidden="true">Aa</span></button>
+        <button type="button" class="theme-btn" id="themeToggle" aria-pressed="false" aria-label="Mode sombre">
+          <svg class="ic-moon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg>
+          <svg class="ic-sun" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg>
+        </button>
+      </div>
     </div>
-    <h1>Pétris moins, calcule mieux.</h1>
-    <p class="sub">Enregistre une recette une seule fois, à la main ou depuis un PDF, puis calcule n'importe quel poids, levain ou hydratation.</p>
-    <div class="header-links" id="headerLinks" hidden>
-      <button type="button" class="link-btn" id="openGuide">Guide d'utilisation</button>
-      <button type="button" class="link-btn" id="openData">Mes données</button>
-    </div>
-    <div class="account-bar" id="accountBar" hidden>
-      <span class="account-email" id="accountEmail"></span>
-      <span class="sync-status" id="syncStatus" role="status" aria-live="polite"></span>
-      <button type="button" class="link-btn" id="signOutBtn">Se déconnecter</button>
+    <div class="hero">
+      <div class="tampon tampon--hero" aria-hidden="true">
+        <span class="tampon-fond"></span>
+        <svg class="tampon-anneaux" viewBox="0 0 120 120" focusable="false">
+          <circle class="anneau anneau--fort" cx="60" cy="60" r="57"/>
+          <circle class="anneau" cx="60" cy="60" r="53.5"/>
+          <circle class="anneau" cx="60" cy="60" r="38"/>
+          <circle class="etoile" cx="13.5" cy="60" r="1.8"/><circle class="etoile" cx="106.5" cy="60" r="1.8"/>
+        </svg>
+        <svg class="tampon-texte" viewBox="0 0 120 120" focusable="false">
+          <defs>
+            <path id="heroHaut" d="M16 60a44 44 0 0 1 88 0"/>
+            <path id="heroBas" d="M10 60a50 50 0 0 0 100 0"/>
+          </defs>
+          <text><textPath href="#heroHaut" startOffset="50%" text-anchor="middle">PÉTRIS MOINS</textPath></text>
+          <text><textPath href="#heroBas" startOffset="50%" text-anchor="middle">CALCULE MIEUX</textPath></text>
+          <g class="etoile" transform="translate(60 61) scale(.42)"><path d="M -0.6 -31 C 3.6 -19, 5.4 -8, 4.9 3.5 C 4.5 13, 3.2 23, 1.3 31 C -0.7 23, -2.6 13, -3.3 3.5 C -4.1 -8, -3.5 -19, -0.6 -31 Z" transform="translate(-22 9) rotate(16)"/><path d="M -0.6 -31 C 3.6 -19, 5.4 -8, 4.9 3.5 C 4.5 13, 3.2 23, 1.3 31 C -0.7 23, -2.6 13, -3.3 3.5 C -4.1 -8, -3.5 -19, -0.6 -31 Z" transform="translate(0 0) rotate(16)"/><path d="M -0.6 -31 C 3.6 -19, 5.4 -8, 4.9 3.5 C 4.5 13, 3.2 23, 1.3 31 C -0.7 23, -2.6 13, -3.3 3.5 C -4.1 -8, -3.5 -19, -0.6 -31 Z" transform="translate(22 -9) rotate(16)"/></g>
+        </svg>
+      </div>
+      <h1>Pétris moins, calcule mieux.</h1>
+      <p class="sub">Enregistre une recette une seule fois, à la main ou depuis un PDF, puis calcule n'importe quel poids, levain ou hydratation.</p>
     </div>
   </header>
 
@@ -57,7 +83,7 @@
       </form>
       <p class="auth-msg" id="loginMsg" role="alert"></p>
       <button type="button" class="link-btn" id="forgotBtn">Mot de passe oublié ?</button>
-      <p class="auth-note">Pas encore de compte ? Demande un accès à la personne qui t'a donné ce lien.</p>
+      <p class="auth-note">Pas encore de compte ? Demande un accès à la personne qui t'a donné ce lien. Un souci pour te connecter ? <button type="button" class="link-btn" data-open-contact>Écris-nous</button></p>
     </section>
 
     <section class="auth-screen" id="screenFatal" aria-labelledby="fatalTitle" hidden>
@@ -68,24 +94,35 @@
 
     <div id="appArea" hidden>
     <div class="tabs" role="tablist" aria-label="Outils">
-      <button type="button" role="tab" id="tab-library" class="active" data-tab="library" aria-controls="panel-library" aria-selected="true">Bibliothèque</button>
-      <button type="button" role="tab" id="tab-calculator" data-tab="calculator" aria-controls="panel-calculator" aria-selected="false" tabindex="-1">Calculateur</button>
-      <button type="button" role="tab" id="tab-tb" data-tab="tb" aria-controls="panel-tb" aria-selected="false" tabindex="-1">Température de base</button>
-      <button type="button" role="tab" id="tab-levain" data-tab="levain" aria-controls="panel-levain" aria-selected="false" tabindex="-1">Levain</button>
-      <button type="button" role="tab" id="tab-hydra" data-tab="hydra" aria-controls="panel-hydra" aria-selected="false" tabindex="-1">Hydratation</button>
-      <button type="button" role="tab" id="tab-croix" data-tab="croix" aria-controls="panel-croix" aria-selected="false" tabindex="-1">Produit en croix</button>
+      <button type="button" role="tab" id="tab-library" class="active" data-tab="library" aria-controls="panel-library" aria-selected="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H5.5A1.5 1.5 0 0 0 4 19.5z"/><path d="M4 19.5A1.5 1.5 0 0 0 5.5 21H19v-3"/><path d="M8 7h7M8 10.5h5"/></svg><span class="tab-long" id="tablbl-library">Bibliothèque</span><span class="tab-short" aria-hidden="true">Recettes</span></button>
+      <button type="button" role="tab" id="tab-calculator" data-tab="calculator" aria-controls="panel-calculator" aria-selected="false" tabindex="-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 21h16l-1.4-9.2A2 2 0 0 0 16.6 10H7.4a2 2 0 0 0-2 1.8z"/><circle cx="12" cy="15.5" r="2.6"/><path d="M12 15.5l1.2-1.2"/><path d="M7 10V8.5A1.5 1.5 0 0 1 8.5 7h7A1.5 1.5 0 0 1 17 8.5V10M9 4h6"/></svg><span class="tab-long" id="tablbl-calculator">Calculateur</span><span class="tab-short" aria-hidden="true">Calcul</span></button>
+      <button type="button" role="tab" id="tab-tb" data-tab="tb" aria-controls="panel-tb" aria-selected="false" tabindex="-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 13.6V5a2 2 0 1 1 4 0v8.6a4 4 0 1 1-4 0z"/><path d="M12 9v7"/><path d="M17 5h2M17 8.5h2"/></svg><span class="tab-long" id="tablbl-tb">Température de base</span><span class="tab-short" aria-hidden="true">Temp.</span></button>
+      <button type="button" role="tab" id="tab-levain" data-tab="levain" aria-controls="panel-levain" aria-selected="false" tabindex="-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 3h10M8 3v2.2c-1.8.9-3 2.6-3 4.8V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-9c0-2.2-1.2-3.9-3-4.8V3"/><path d="M5 13c2.2-1 4.6 1 7 0s4.8-1 7 0"/><circle cx="9.5" cy="17" r="1"/><circle cx="14" cy="16" r="1.4"/></svg><span class="tab-long" id="tablbl-levain">Levain</span><span class="tab-short" aria-hidden="true">Levain</span></button>
+      <button type="button" role="tab" id="tab-hydra" data-tab="hydra" aria-controls="panel-hydra" aria-selected="false" tabindex="-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3s6 6.6 6 11a6 6 0 0 1-12 0c0-4.4 6-11 6-11z"/><path d="M9.2 14.6a2.9 2.9 0 0 0 2.6 2.6"/></svg><span class="tab-long" id="tablbl-hydra">Hydratation</span><span class="tab-short" aria-hidden="true">Hydra.</span></button>
+      <button type="button" role="tab" id="tab-croix" data-tab="croix" aria-controls="panel-croix" aria-selected="false" tabindex="-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h13l-3-3M20 17H7l3 3"/></svg><span class="tab-long" id="tablbl-croix">Produit en croix</span><span class="tab-short" aria-hidden="true">Croix</span></button>
     </div>
 
-    <section class="tabpanel" role="tabpanel" id="panel-library" aria-labelledby="tab-library" tabindex="-1"><h2 class="sr-only">Bibliothèque</h2><div id="rc-library-view"></div></section>
-    <section class="tabpanel" role="tabpanel" id="panel-calculator" aria-labelledby="tab-calculator" tabindex="-1" hidden><h2 class="sr-only">Calculateur</h2><div id="rc-calculator-view"></div></section>
-    <section class="tabpanel" role="tabpanel" id="panel-tb" aria-labelledby="tab-tb" tabindex="-1" hidden><h2 class="sr-only">Température de base</h2><div id="rc-tb-view"></div></section>
-    <section class="tabpanel" role="tabpanel" id="panel-levain" aria-labelledby="tab-levain" tabindex="-1" hidden><h2 class="sr-only">Levain</h2><div id="rc-levain-view"></div></section>
-    <section class="tabpanel" role="tabpanel" id="panel-hydra" aria-labelledby="tab-hydra" tabindex="-1" hidden><h2 class="sr-only">Hydratation</h2><div id="rc-hydra-view"></div></section>
-    <section class="tabpanel" role="tabpanel" id="panel-croix" aria-labelledby="tab-croix" tabindex="-1" hidden><h2 class="sr-only">Produit en croix</h2><div id="rc-croix-view"></div></section>
+    <section class="tabpanel" role="tabpanel" id="panel-library" aria-labelledby="tablbl-library" tabindex="-1"><h2 class="screen-title">Bibliothèque</h2><div id="rc-library-view"></div></section>
+    <section class="tabpanel" role="tabpanel" id="panel-calculator" aria-labelledby="tablbl-calculator" tabindex="-1" hidden><h2 class="sr-only">Calculateur</h2><div id="rc-calculator-view"></div></section>
+    <section class="tabpanel" role="tabpanel" id="panel-tb" aria-labelledby="tablbl-tb" tabindex="-1" hidden><h2 class="screen-title">Température de base</h2><div id="rc-tb-view"></div></section>
+    <section class="tabpanel" role="tabpanel" id="panel-levain" aria-labelledby="tablbl-levain" tabindex="-1" hidden><h2 class="screen-title">Levain</h2><div id="rc-levain-view"></div></section>
+    <section class="tabpanel" role="tabpanel" id="panel-hydra" aria-labelledby="tablbl-hydra" tabindex="-1" hidden><h2 class="screen-title">Hydratation</h2><div id="rc-hydra-view"></div></section>
+    <section class="tabpanel" role="tabpanel" id="panel-croix" aria-labelledby="tablbl-croix" tabindex="-1" hidden><h2 class="screen-title">Produit en croix</h2><div id="rc-croix-view"></div></section>
 
     <p class="save-warn" id="rc-save-warn" role="alert" hidden>La sauvegarde a échoué — tes changements ne persisteront peut-être pas.</p>
     </div>
   </main>
+
+  <section class="account-zone" aria-label="Mon compte">
+    <div class="account-bar" id="accountBar" hidden>
+      <span class="account-email" id="accountEmail"></span>
+      <button type="button" class="link-btn" id="signOutBtn">Se déconnecter</button>
+    </div>
+    <div class="header-links" id="headerLinks" hidden>
+      <button type="button" class="link-btn" id="openData">Mes données</button>
+      <button type="button" class="link-btn" data-open-contact>Nous écrire</button>
+    </div>
+  </section>
 </div>
 
 <footer class="site-footer">
@@ -97,24 +134,104 @@
   </nav>
 </footer>
 
-<dialog class="sheet-dialog" id="guideDialog" aria-labelledby="guideTitle">
+<dialog class="sheet-dialog guide" id="guideDialog" aria-labelledby="guideTitle">
   <div class="sheet-head"><h2 id="guideTitle">Guide d'utilisation</h2><button type="button" class="sheet-close" data-close aria-label="Fermer le guide">×</button></div>
   <div class="sheet-body" tabindex="0">
-    <h3>Bibliothèque</h3>
-    <p>Enregistre une recette, à la main ou en important un PDF avec texte sélectionnable. Touche une recette pour voir ses ingrédients, avec la colonne « Base 1 kg farine » : la recette ramenée à 1 kg de farine. Tu peux aussi noter la température de base (TB) de la recette : elle s'affiche dans la liste.</p>
-    <h3>Calculateur</h3>
-    <p>Choisis une recette puis un mode : Poids total (le poids de pâte voulu), Pièces × poids (par exemple 15 bâtards × 350 g) ou Poids de farine (la farine à utiliser, le reste se recalcule). Le coefficient est calculé sur la farine : les ingrédients contenant « farine » sont additionnés. Sans farine dans la recette, il se base sur le poids total. « Enregistrer ce calcul » le garde dans l'historique : touche une ligne pour voir le détail, l'icône corbeille pour la supprimer.</p>
-    <h3>Température de base</h3>
-    <p>Saisis la température de base, celle du labo et celle de la farine : la température de l'eau à utiliser s'affiche (base − labo − farine).</p>
-    <h3>Levain</h3>
-    <p>Rafraîchi avec un ratio levain / eau / farine : 1/1/1, 1/2/2, 1/3/3, 1/5/5, 1/10/10 ou personnalisé. « J'ai du levain » : donne ton poids de levain, l'eau et la farine à ajouter sont calculées. « Je veux un poids total » : donne le total voulu, tu obtiens levain, eau et farine.</p>
-    <h3>Hydratation</h3>
-    <p>Saisis la farine et l'eau utilisées, en kg ou en g : tu obtiens le total et le taux d'hydratation (eau ÷ farine).</p>
-    <h3>Produit en croix</h3>
-    <p>Universel : si A correspond à B, alors C correspond à ? Résultat = B × C ÷ A.</p>
-    <h3>Mon compte et mes données</h3>
-    <p>Tes recettes sont rattachées à ton compte : tu les retrouves en te connectant sur un autre appareil. Le message à côté de ton adresse e-mail indique si tout est synchronisé. Tu peux aussi télécharger une sauvegarde, la restaurer, ou tout effacer.</p>
-    <div class="note">Ton compte fonctionne sur 3 appareils à la fois : en te connectant sur un quatrième, le plus ancien est déconnecté. Sans internet, tu peux continuer à travailler : tes changements sont envoyés au retour du réseau. Sur iPhone : Safari, Partager, puis « Sur l'écran d'accueil » pour l'avoir comme une appli.</div>
+    <nav class="guide-toc" aria-label="Sommaire du guide">
+      <a href="#g-premier">Premier pas</a><a href="#g-recettes">Recettes</a><a href="#g-calcul">Calcul</a><a href="#g-levain">Levain</a><a href="#g-hydra">Hydratation</a><a href="#g-temp">Température</a><a href="#g-croix">Produit en croix</a><a href="#g-compte">Compte</a>
+    </nav>
+
+    <section class="guide-first" id="g-premier" aria-labelledby="g-premier-t">
+      <h3 id="g-premier-t">Premier pas en 3 minutes</h3>
+      <ol class="guide-steps">
+        <li><strong>Ajoute une recette.</strong> Onglet Recettes, « Ajouter une recette ». Donne-lui un nom, puis une ligne par ingrédient : par exemple « Farine T65 » 1000 g, « Eau » 680 g, « Levain liquide » 200 g, « Sel » 20 g. Touche « Enregistrer ».</li>
+        <li><strong>Calcule-la.</strong> Onglet Calcul, choisis la recette, garde « Poids total » et tape 15 kg. Le tampon affiche le total de pâte, la farine à peser vient en premier, puis le reste.</li>
+        <li><strong>Enregistre le calcul.</strong> Donne-lui un nom (« Fournée de samedi ») et touche « Enregistrer ce calcul ». Il t'attend sous « Calculs enregistrés », sur tous tes appareils.</li>
+      </ol>
+    </section>
+
+    <section class="guide-tool" id="g-recettes" aria-labelledby="g-recettes-t">
+      <h3 id="g-recettes-t"><svg class="guide-ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H5.5A1.5 1.5 0 0 0 4 19.5z"/><path d="M4 19.5A1.5 1.5 0 0 0 5.5 21H19v-3"/><path d="M8 7h7M8 10.5h5"/></svg>Recettes</h3>
+      <p>Ta bibliothèque : chaque recette est écrite une seule fois, à la main, en collant un texte ou en important un PDF qui contient du texte sélectionnable. Touche une recette pour voir ses ingrédients avec la colonne « Base 1 kg farine » : la recette ramenée à 1 kg de farine. « Calculer » l'ouvre directement dans le Calcul.</p>
+      <h4>Exemple</h4>
+      <p class="guide-ex">Ton pain de campagne : 1000 g de farine T65, 680 g d'eau, 200 g de levain liquide, 20 g de sel. La fiche indique « Référence 1,9 kg » : c'est le poids de pâte de la recette telle que tu l'as écrite.</p>
+      <h4>Pièges courants</h4>
+      <ul class="guide-traps">
+        <li>Garde le mot « farine » dans le nom de chaque farine (« Farine T65 », « Farine de seigle ») : c'est ce qui sert de base aux calculs. Sans farine, le calcul se fait sur le poids total.</li>
+        <li>Choisis la bonne unité sur chaque ligne : « 1 » en kg, c'est 1000 g.</li>
+        <li>La température de base (TB) est facultative : elle s'affiche sur la fiche pour t'en souvenir.</li>
+      </ul>
+    </section>
+
+    <section class="guide-tool" id="g-calcul" aria-labelledby="g-calcul-t">
+      <h3 id="g-calcul-t"><svg class="guide-ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 21h16l-1.4-9.2A2 2 0 0 0 16.6 10H7.4a2 2 0 0 0-2 1.8z"/><circle cx="12" cy="15.5" r="2.6"/><path d="M12 15.5l1.2-1.2"/><path d="M7 10V8.5A1.5 1.5 0 0 1 8.5 7h7A1.5 1.5 0 0 1 17 8.5V10M9 4h6"/></svg>Calcul</h3>
+      <p>Il recalcule une recette pour n'importe quelle quantité, de trois façons : le poids total de pâte, des pièces × un poids, ou le poids de farine que tu veux utiliser.</p>
+      <h4>Exemple</h4>
+      <p class="guide-ex">Tu veux 40 baguettes de 350 g avec ton pain de campagne. Mode « Pièces × poids », 40 × 350 : le tampon affiche 14 kg de pâte. À peser : 7,37 kg de farine, 5,01 kg d'eau, 1,47 kg de levain et 147,4 g de sel.</p>
+      <h4>Pièges courants</h4>
+      <ul class="guide-traps">
+        <li>Vérifie l'unité à côté du poids voulu : « 15 » en g, c'est 15 g de pâte, pas 15 kg.</li>
+        <li>En mode pièces, le poids par pièce est toujours en grammes, et c'est le poids de pâte crue, pas celui du pain cuit.</li>
+        <li>Pour finir un sac de farine, prends « Poids de farine » : un sac de 25 kg donne 47,5 kg de pâte avec ce pain.</li>
+        <li>Les boutons − et + ajoutent ou retirent 1 kg (ou 100 g si l'unité est en grammes).</li>
+      </ul>
+    </section>
+
+    <section class="guide-tool" id="g-levain" aria-labelledby="g-levain-t">
+      <h3 id="g-levain-t"><svg class="guide-ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 3h10M8 3v2.2c-1.8.9-3 2.6-3 4.8V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-9c0-2.2-1.2-3.9-3-4.8V3"/><path d="M5 13c2.2-1 4.6 1 7 0s4.8-1 7 0"/><circle cx="9.5" cy="17" r="1"/><circle cx="14" cy="16" r="1.4"/></svg>Levain</h3>
+      <p>Il prépare ton rafraîchi. Le ratio se lit levain / eau / farine : 1 / 2 / 2, c'est 1 part de levain pour 2 parts d'eau et 2 parts de farine. Choisis « J'ai du levain » (tu connais ton levain de départ) ou « Je veux un poids total » (tu connais la quantité qu'il te faut).</p>
+      <h4>Exemple</h4>
+      <p class="guide-ex">Il te reste 200 g de chef. En 1 / 1 / 1, ajoute 200 g d'eau et 200 g de farine : 600 g de levain. Il te faut 1 kg de levain pour demain ? En 1 / 2 / 2 : 200 g de chef, 400 g d'eau, 400 g de farine.</p>
+      <h4>Pièges courants</h4>
+      <ul class="guide-traps">
+        <li>Ne confonds pas l'ordre : la première part est toujours le levain, pas la farine.</li>
+        <li>En ratio personnalisé, aucune part ne peut être à 0.</li>
+        <li>Vérifie l'unité : « 1 » en g, c'est 1 g de levain.</li>
+      </ul>
+    </section>
+
+    <section class="guide-tool" id="g-hydra" aria-labelledby="g-hydra-t">
+      <h3 id="g-hydra-t"><svg class="guide-ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3s6 6.6 6 11a6 6 0 0 1-12 0c0-4.4 6-11 6-11z"/><path d="M9.2 14.6a2.9 2.9 0 0 0 2.6 2.6"/></svg>Hydratation</h3>
+      <p>Il donne le taux d'hydratation d'une pâte : le poids d'eau divisé par le poids de farine.</p>
+      <h4>Exemple</h4>
+      <p class="guide-ex">10 kg de farine et 6,8 kg d'eau : 68 % d'hydratation, pour 16,8 kg de farine et d'eau en tout.</p>
+      <h4>Pièges courants</h4>
+      <ul class="guide-traps">
+        <li>L'outil ne compte que ce que tu saisis : pour l'hydratation totale, ajoute aussi l'eau et la farine contenues dans ton levain.</li>
+        <li>Chaque champ a sa propre unité : 10 kg de farine et 6800 g d'eau, ça marche aussi.</li>
+      </ul>
+    </section>
+
+    <section class="guide-tool" id="g-temp" aria-labelledby="g-temp-t">
+      <h3 id="g-temp-t"><svg class="guide-ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 13.6V5a2 2 0 1 1 4 0v8.6a4 4 0 1 1-4 0z"/><path d="M12 9v7"/><path d="M17 5h2M17 8.5h2"/></svg>Température de base</h3>
+      <p>Il donne la température de l'eau de coulage pour sortir une pâte à la bonne température : base − labo − farine.</p>
+      <h4>Exemple</h4>
+      <p class="guide-ex">TB de 56 °C, labo à 24 °C, farine à 21 °C : coule ton eau à 11 °C.</p>
+      <h4>Pièges courants</h4>
+      <ul class="guide-traps">
+        <li>Mesure la farine elle-même, pas l'air du labo : un sac rangé près du four est plus chaud.</li>
+        <li>L'outil fait base − labo − farine : garde une TB pensée pour ce calcul à trois températures.</li>
+        <li>Résultat très bas en été ? Utilise de l'eau glacée, voire une partie de glace.</li>
+      </ul>
+    </section>
+
+    <section class="guide-tool" id="g-croix" aria-labelledby="g-croix-t">
+      <h3 id="g-croix-t"><svg class="guide-ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h13l-3-3M20 17H7l3 3"/></svg>Produit en croix</h3>
+      <p>La règle de trois, pour tout le reste : si A correspond à B, alors C correspond à B × C ÷ A.</p>
+      <h4>Exemple</h4>
+      <p class="guide-ex">20 g de sel pour 1000 g de farine : pour 1500 g de farine, A = 1000, B = 20, C = 1500, il faut 30 g de sel.</p>
+      <h4>Pièges courants</h4>
+      <ul class="guide-traps">
+        <li>A et C doivent être dans la même unité (tous les deux en g, ou tous les deux en kg).</li>
+        <li>A ne peut pas être 0.</li>
+      </ul>
+    </section>
+
+    <section class="guide-tool" id="g-compte" aria-labelledby="g-compte-t">
+      <h3 id="g-compte-t"><svg class="guide-ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Mon compte et mes données</h3>
+      <p>Tes recettes sont rattachées à ton compte : tu les retrouves en te connectant sur un autre appareil. Le point vert en haut indique que tout est synchronisé. Depuis « Mes données », tu peux télécharger une sauvegarde, la restaurer ou tout effacer.</p>
+      <div class="note">Ton compte fonctionne sur 3 appareils à la fois : en te connectant sur un quatrième, le plus ancien est déconnecté. Sans internet, tu peux continuer à travailler : tes changements sont envoyés au retour du réseau. Sur iPhone : Safari, Partager, puis « Sur l'écran d'accueil » pour l'avoir comme une appli.</div>
+    </section>
   </div>
 </dialog>
 
@@ -129,6 +246,27 @@
     </div>
     <input type="file" id="importFile" accept="application/json,.json" hidden aria-label="Choisir un fichier de sauvegarde">
     <p class="data-status" id="dataStatus" role="status" aria-live="polite"></p>
+  </div>
+</dialog>
+<dialog class="sheet-dialog" id="contactDialog" aria-labelledby="contactTitle">
+  <div class="sheet-head"><h2 id="contactTitle">Nous écrire</h2><button type="button" class="sheet-close" data-close aria-label="Fermer">×</button></div>
+  <div class="sheet-body" tabindex="0">
+    <p>Un problème, une question, une idée ? Écris ton message : ton application mail s'ouvre avec le message prêt, tu n'as plus qu'à l'envoyer.</p>
+    <form id="contactForm" class="contact-form" novalidate>
+      <fieldset class="contact-subject">
+        <legend class="field-label">Sujet</legend>
+        <div class="modes">
+          <label><input type="radio" name="contactSubject" value="probleme" checked><span>Un problème</span></label>
+          <label><input type="radio" name="contactSubject" value="question"><span>Une question</span></label>
+          <label><input type="radio" name="contactSubject" value="idee"><span>Une idée</span></label>
+        </div>
+      </fieldset>
+      <label class="field-label" for="contactMessage">Ton message</label>
+      <textarea id="contactMessage" rows="6" maxlength="3000" aria-describedby="contactStatus" placeholder="Explique ce qui se passe, sur quel écran, avec quel téléphone…"></textarea>
+      <button type="submit" class="btn-dark btn-dark--wide">Ouvrir ma messagerie</button>
+    </form>
+    <p class="contact-status" id="contactStatus" role="status" aria-live="polite"></p>
+    <div class="note">Grigne n'envoie rien lui-même et ne garde rien : le message part de ta propre adresse e-mail.</div>
   </div>
 </dialog>
 </body>

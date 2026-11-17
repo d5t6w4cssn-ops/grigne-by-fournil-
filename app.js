@@ -7,6 +7,7 @@ import { renderLevain } from './ui-levain.js';
 import { renderHydra } from './ui-hydra.js';
 import { renderCroix } from './ui-cross.js';
 import { setupDialogs } from './ui-dialogs.js';
+import { setupContact } from './ui-contact.js';
 import { showScreen } from './ui-auth.js';
 import { loadCloud } from './cloud.js';
 import { createSession } from './session.js';
@@ -61,6 +62,7 @@ async function start() {
   });
   setupTabs();
   setupDialogs(render);
+  setupContact();
   showScreen('loading');
   let cloud;
   try {

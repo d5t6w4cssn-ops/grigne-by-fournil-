@@ -18,7 +18,7 @@ const keys = () => ({
 export function setScope(uid) {
   scope = typeof uid === 'string' ? uid : '';
 }
-export const hasScope = () => scope !== '';
+const hasScope = () => scope !== '';
 
 function readJson(key) {
   try {

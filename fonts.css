@@ -28,3 +28,32 @@
   font-display: swap;
   src: url('hanken-grotesk-latin-600-normal.woff2') format('woff2');
 }
+/* Espace fine insécable (U+202F) entre un nombre et son unité : ni Young Serif ni
+   Hanken Grotesk ne la dessinent. Cette police maison (un seul glyphe vide de 0,2 em)
+   la fournit, partout pareille, et ne s'applique qu'à ce caractère. */
+@font-face {
+  font-family: 'Grigne Espace fine';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: block;
+  src: url('grigne-espace-fine.woff2') format('woff2');
+  unicode-range: U+202F;
+}
+/* OpenDyslexic (Abbie Gonzalez, licence SIL OFL 1.1, texte dans LICENSE-opendyslexic.txt, à côté des polices) :
+   police de l'option « Lecture facile ». Fichiers complets et originaux de l'autrice (version 0.990, dépôt officiel
+   « opendyslexic » d'antijingoist sur GitHub, dossier « compiled »), non modifiés ; licence : OFL.txt du dépôt.
+   Téléchargée seulement quand l'option est active. */
+@font-face {
+  font-family: 'OpenDyslexic';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('OpenDyslexic-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'OpenDyslexic';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('OpenDyslexic-Bold.woff2') format('woff2');
+}

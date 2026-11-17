@@ -1,8 +1,11 @@
 import { state } from './state.js';
 import { LEVAIN_PRESETS, computeLevain } from './core-levain.js';
 import { formatGrams } from './core-units.js';
-import { byId, el, intro, nextId, qtyField, resultMount, singleResult } from './ui-dom.js';
+import { amount, byId, el, intro, nextId, qtyField, resultCard, resultMount, waitLine } from './ui-dom.js';
 import { esc } from './core-text.js';
+
+const CHEVRON =
+  '<svg class="picker-chevron" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>';
 
 export function renderLevain() {
   const view = byId('rc-levain-view');
@@ -13,10 +16,16 @@ export function renderLevain() {
     'Choisis ton ratio de rafraîchi (levain / eau / farine), puis indique soit le levain que tu as, soit le poids total que tu veux obtenir.',
   );
 
-  const lab = el('label', 'field-label', 'Ratio levain / eau / farine');
+  const layout = el('div', 'tool');
+  const controls = el('div', 'tool-controls');
+  layout.appendChild(controls);
+  view.appendChild(layout);
+
+  // ratio : grand sélecteur, l'étiquette dans le cadre
+  const picker = el('div', 'picker');
+  const lab = el('label', 'picker-k', 'Ratio levain / eau / farine');
   lab.htmlFor = 'rc-levain-preset';
-  view.appendChild(lab);
-  const sel = el('select', 'recipe-select recipe-select--tight');
+  const sel = el('select', 'picker-v');
   sel.id = 'rc-levain-preset';
   LEVAIN_PRESETS.forEach((p) => {
     const o = document.createElement('option');
@@ -29,12 +38,14 @@ export function renderLevain() {
     s.preset = e.target.value;
     renderLevain();
   };
-  view.appendChild(sel);
+  picker.append(lab, sel);
+  picker.insertAdjacentHTML('beforeend', CHEVRON);
+  controls.appendChild(picker);
 
   if (s.preset === 'custom') {
-    const cr = el('div', 'qty-row qty-row--spaced-lg');
+    const cr = el('div', 'ratio-row');
     const mk = (k, label, ph) =>
-      `<input type="number" inputmode="decimal" step="any" min="0" aria-label="${label}" placeholder="${ph}" value="${esc(s[k])}" data-k="${k}">`;
+      `<span class="ratio-part"><span class="ratio-k" aria-hidden="true">${ph}</span><input type="number" inputmode="decimal" step="any" min="0" aria-label="${label}" placeholder="${ph[0]}" value="${esc(s[k])}" data-k="${k}"></span>`;
     cr.innerHTML = `${mk('cLev', 'Part de levain', 'Levain')}<span class="times" aria-hidden="true">/</span>${mk('cEau', "Part d'eau", 'Eau')}<span class="times" aria-hidden="true">/</span>${mk('cFar', 'Part de farine', 'Farine')}`;
     cr.setAttribute('role', 'group');
     cr.setAttribute('aria-label', 'Ratio personnalisé levain, eau, farine');
@@ -44,26 +55,27 @@ export function renderLevain() {
         renderLevainResult();
       };
     });
-    view.appendChild(cr);
+    controls.appendChild(cr);
   }
 
-  const modeRow = el('div', 'mode-row');
+  const modeRow = el('div', 'modes modes--2');
   modeRow.setAttribute('role', 'radiogroup');
   modeRow.setAttribute('aria-label', 'Ce que tu connais');
   const name = nextId('levain-mode');
   modeRow.innerHTML = `
-    <label><input type="radio" name="${name}" value="have" ${s.mode === 'have' ? 'checked' : ''}> J'ai du levain</label>
-    <label><input type="radio" name="${name}" value="total" ${s.mode === 'total' ? 'checked' : ''}> Je veux un poids total</label>`;
+    <label><input type="radio" name="${name}" value="have" ${s.mode === 'have' ? 'checked' : ''}><span>J'ai du levain</span></label>
+    <label><input type="radio" name="${name}" value="total" ${s.mode === 'total' ? 'checked' : ''}><span>Je veux un poids total</span></label>`;
   modeRow.querySelectorAll('input').forEach((r) => {
     r.onchange = (e) => {
       s.mode = e.target.value;
       renderLevain();
+      byId('rc-levain-view').querySelector(`input[type=radio][value="${s.mode}"]`)?.focus();
     };
   });
-  view.appendChild(modeRow);
+  controls.appendChild(modeRow);
 
   qtyField(
-    view,
+    controls,
     s.mode === 'have' ? "Poids de levain que j'ai" : 'Poids total de levain voulu',
     s.qty,
     s.unit,
@@ -78,23 +90,37 @@ export function renderLevain() {
     'Ex. 1',
   );
 
-  view.appendChild(resultMount('rc-levain-result'));
+  layout.appendChild(resultMount('rc-levain-result'));
   renderLevainResult();
+}
+
+function ratioText() {
+  const s = state.levain;
+  if (s.preset !== 'custom') return s.preset.split('-').join(' / ');
+  return [s.cLev, s.cEau, s.cFar].map((v) => String(v || '?').replace('.', ',')).join(' / ');
 }
 
 function renderLevainResult() {
   const wrap = byId('rc-levain-result');
   if (!wrap) return;
   const r = computeLevain(state.levain);
+  const common = { stampLabel: 'Total de levain obtenu', stampTop: 'TOTAL LEVAIN', kicker: 'Ton rafraîchi', title: `Ratio ${ratioText()}` };
   if (r.status !== 'ok') {
-    wrap.innerHTML = singleResult('Résultat', r.status === 'invalid' ? 'ratio invalide' : 'en attente du poids');
+    wrap.innerHTML = resultCard({
+      ...common,
+      value: '',
+      body: waitLine(r.status === 'invalid' ? 'ratio invalide : chaque part doit être plus grande que 0' : 'en attente du poids', r.status === 'invalid' ? 'err' : 'wait'),
+    });
     return;
   }
-  wrap.innerHTML = `
-    <div class="result-table">
-      <div class="result-row"><span>Levain (à garder)</span><span class="amt">${formatGrams(r.levG)}</span></div>
-      <div class="result-row alt"><span>Eau</span><span class="amt">${formatGrams(r.eauG)}</span></div>
-      <div class="result-row"><span>Farine</span><span class="amt">${formatGrams(r.farG)}</span></div>
-      <div class="result-total"><span>Total de levain obtenu</span><span class="amt">${formatGrams(r.totG)}</span></div>
-    </div>`;
+  const line = (n, g, cls = '') => `<li class="${cls}"><span class="n">${n}</span><span class="q">${amount(formatGrams(g))}</span></li>`;
+  wrap.innerHTML = resultCard({
+    ...common,
+    value: formatGrams(r.totG),
+    body: `<ol class="weigh">
+        ${line('Levain (à garder)', r.levG)}
+        ${line('Eau', r.eauG, 'lead lead--soft')}
+        ${line('Farine', r.farG, 'lead lead--soft')}
+      </ol>`,
+  });
 }

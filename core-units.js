@@ -19,19 +19,30 @@ export function gramsOf(value, unit) {
   return n !== null && n >= 0 ? toGrams(n, unit) : null;
 }
 
-/** « 1250 » → « 1.25 kg », « 350 » → « 350 g ». */
+/** Espace fine insécable, entre un nombre et son unité (typographie française). */
+export const NNBSP = '\u202F';
+
+/** Virgule décimale française : « 7.89 » → « 7,89 ». Affichage seulement. */
+const comma = (s) => s.replace('.', ',');
+
+/** « 1250 » → « 1,25 kg », « 350 » → « 350 g » (espace fine insécable avant l'unité). */
 export function formatGrams(g) {
   if (g >= 1000) {
     const kg = g / 1000;
     const s = kg % 1 === 0 ? kg.toFixed(0) : kg.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
-    return `${s} kg`;
+    return `${comma(s)}${NNBSP}kg`;
   }
-  return `${Math.round(g * 10) / 10} g`;
+  return `${comma(String(Math.round(g * 10) / 10))}${NNBSP}g`;
 }
 
-/** Arrondi à `dec` décimales (1 par défaut) ; « — » si le nombre est absent ou infini. */
+/** Nombre à `dec` décimales fixes, avec virgule : fixed(7.894, 2) → « 7,89 ». */
+export function fixed(n, dec) {
+  return comma(n.toFixed(dec));
+}
+
+/** Arrondi à `dec` décimales (1 par défaut), avec virgule ; « — » si le nombre est absent ou infini. */
 export function fmtNum(n, dec) {
   if (n === null || !Number.isFinite(n)) return '—';
   const d = dec === undefined ? 1 : dec;
-  return String(Math.round(n * 10 ** d) / 10 ** d);
+  return comma(String(Math.round(n * 10 ** d) / 10 ** d));
 }
