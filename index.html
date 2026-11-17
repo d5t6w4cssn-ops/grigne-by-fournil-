@@ -229,7 +229,7 @@
 
     <section class="guide-tool" id="g-compte" aria-labelledby="g-compte-t">
       <h3 id="g-compte-t"><svg class="guide-ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Mon compte et mes données</h3>
-      <p>Tes recettes sont rattachées à ton compte : tu les retrouves en te connectant sur un autre appareil. Le point vert en haut indique que tout est synchronisé. Depuis « Mes données », tu peux télécharger une sauvegarde, la restaurer ou tout effacer.</p>
+      <p>Tes recettes sont rattachées à ton compte : tu les retrouves en te connectant sur un autre appareil. Le point vert en haut indique que tout est synchronisé. Depuis « Mes données », tu peux exporter tes recettes dans un fichier, importer un fichier Grigne (sans rien remplacer) ou tout effacer.</p>
       <div class="note">Ton compte fonctionne sur 3 appareils à la fois : en te connectant sur un quatrième, le plus ancien est déconnecté. Sans internet, tu peux continuer à travailler : tes changements sont envoyés au retour du réseau. Sur iPhone : Safari, Partager, puis « Sur l'écran d'accueil » pour l'avoir comme une appli.</div>
     </section>
   </div>
@@ -239,12 +239,13 @@
   <div class="sheet-head"><h2 id="dataTitle">Mes données</h2><button type="button" class="sheet-close" data-close aria-label="Fermer">×</button></div>
   <div class="sheet-body" tabindex="0">
     <p>Tes recettes et ton historique sont enregistrés sur cet appareil et dans ton compte (serveurs Google en Europe), pour les retrouver partout où tu te connectes.</p>
+    <p>« Exporter mes recettes » télécharge un fichier avec toutes tes recettes : garde-le en sauvegarde, ou importe-le sur un autre appareil. L'import ajoute les recettes du fichier sans jamais remplacer les tiennes.</p>
     <div class="data-actions">
-      <button type="button" class="btn-dark btn-dark--wide" id="exportData">Télécharger une sauvegarde</button>
-      <button type="button" class="btn-dark btn-dark--wide" id="importData">Restaurer une sauvegarde</button>
+      <button type="button" class="btn-dark btn-dark--wide" id="exportData">Exporter mes recettes</button>
+      <button type="button" class="btn-dark btn-dark--wide" id="importData">Importer un fichier Grigne</button>
       <button type="button" class="btn-danger" id="wipeData">Tout effacer</button>
     </div>
-    <input type="file" id="importFile" accept="application/json,.json" hidden aria-label="Choisir un fichier de sauvegarde">
+    <input type="file" id="importFile" accept="application/json,.json" hidden aria-label="Choisir un fichier Grigne">
     <p class="data-status" id="dataStatus" role="status" aria-live="polite"></p>
   </div>
 </dialog>

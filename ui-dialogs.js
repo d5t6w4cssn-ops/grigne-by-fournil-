@@ -1,6 +1,7 @@
 // Boîtes de dialogue natives (<dialog>) : focus piégé, Échap et retour du focus gérés par le navigateur.
 import { state, replaceAll, wipeAll } from './state.js';
-import { sanitizeRecipes, sanitizeHistory } from './core-sanitize.js';
+import { exportFileName, exportText, mergeImport, parseExport, MAX_IMPORT_BYTES } from './core-export.js';
+import { uid } from './core-text.js';
 import { byId } from './ui-dom.js';
 
 function openModal(dialog) {
@@ -18,6 +19,9 @@ function wireDialog(dialog) {
   });
 }
 
+/** « 0 recette ajoutée », « 1 recette ajoutée », « 3 recettes ajoutées ». */
+const plural = (n, one, many) => `${n} ${n > 1 ? many : one}`;
+
 export function setupDialogs(onDataChanged) {
   const guide = byId('guideDialog');
   const data = byId('dataDialog');
@@ -34,23 +38,18 @@ export function setupDialogs(onDataChanged) {
   };
 
   byId('exportData').addEventListener('click', () => {
-    const payload = {
-      app: 'grigne',
-      version: 1,
-      exportedAt: new Date().toISOString(),
-      recipes: state.recipes,
-      history: state.history,
-    };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    // Fichier fabriqué dans le navigateur : aucune requête réseau.
+    const now = new Date();
+    const blob = new Blob([exportText(state.recipes, state.history, now)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `grigne-sauvegarde-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = exportFileName(now);
     document.body.appendChild(a);
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
-    status(`Sauvegarde téléchargée : ${state.recipes.length} recette(s).`);
+    status(`Fichier téléchargé : ${plural(state.recipes.length, 'recette exportée', 'recettes exportées')}.`);
   });
 
   const importInput = byId('importFile');
@@ -59,19 +58,23 @@ export function setupDialogs(onDataChanged) {
     const file = importInput.files[0];
     importInput.value = '';
     if (!file) return;
-    try {
-      if (file.size > 5 * 1024 * 1024) throw new Error('trop gros');
-      const json = JSON.parse(await file.text());
-      if (!json || json.app !== 'grigne') throw new Error('format');
-      const recipes = sanitizeRecipes(json.recipes);
-      const history = sanitizeHistory(json.history);
-      if (!window.confirm(`Remplacer tes ${state.recipes.length} recette(s) actuelle(s) par les ${recipes.length} du fichier ?`)) return;
-      replaceAll(recipes, history);
-      onDataChanged();
-      status(`Sauvegarde restaurée : ${recipes.length} recette(s).`);
-    } catch {
-      status("Ce fichier n'est pas une sauvegarde Grigne valide.");
+    const parsed = file.size > MAX_IMPORT_BYTES ? { error: 'format' } : parseExport(await file.text());
+    if (parsed.error === 'version') {
+      status("Ce fichier vient d'une version plus récente de Grigne : mets l'application à jour, puis réessaie.");
+      return;
     }
+    if (parsed.error) {
+      status("Ce fichier n'est pas un fichier Grigne valide.");
+      return;
+    }
+    const merged = mergeImport({ recipes: state.recipes, history: state.history }, parsed, uid);
+    const historyChanged = merged.history.length !== state.history.length || merged.history.some((h, k) => h !== state.history[k]);
+    if (merged.added > 0 || historyChanged) {
+      replaceAll(merged.recipes, merged.history);
+      onDataChanged();
+    }
+    const skipped = merged.skipped ? `, ${plural(merged.skipped, 'déjà présente (ignorée)', 'déjà présentes (ignorées)')}` : '';
+    status(`Import terminé : ${plural(merged.added, 'recette ajoutée', 'recettes ajoutées')}${skipped}. Aucune recette existante n'a été remplacée.`);
   });
 
   byId('wipeData').addEventListener('click', () => {
